@@ -1,10 +1,10 @@
-import './App.css';
+import "./App.css";
 import { useEffect, useState } from "react";
-import Board from './components/board/board';
-import Keyboard from './components/keyboard/keyboard';
-import { nanoid } from 'nanoid';
+import Board from "./components/board/board";
+import Keyboard from "./components/keyboard/keyboard";
+import { nanoid } from "nanoid";
 
-const dailyWord = 'parola';
+const dailyWord = "parola";
 
 function App() {
   let [board, setBoard] = useState(createBoard());
@@ -12,29 +12,27 @@ function App() {
   function createBoard() {
     const tmp = [];
 
-    for(let i = 0; i <= 5; i++) {
+    for (let i = 0; i <= 5; i++) {
       tmp.push([]);
-      for(let y = 0; y <= dailyWord.length - 1; y++) {
+      for (let y = 0; y <= dailyWord.length - 1; y++) {
         tmp[i].push({
-          id:  nanoid(),
-          letter: '',
-          state: ''
-        })
+          id: nanoid(),
+          letter: "",
+          state: "",
+        });
       }
     }
-  
+
     return tmp;
   }
 
   const setBoardNewValue = (value) => {
-    console.log(value);
-    if(value) {
+    if (value) {
       setBoard(value);
     } else {
-      console.log('si')
       setBoard(createBoard());
     }
-  }
+  };
 
   return (
     <div className="App">
@@ -44,8 +42,6 @@ function App() {
     </div>
   );
 }
-
-
 
 export default App;
 

@@ -30,8 +30,7 @@ export default function Letter({letterObj, isKeyboard, elementClicked}) {
     }
     
     return (
-      <div className={letterClass} 
-      key={letterObj.id}  
+      <div className={letterClass}  
       onClick={isKeyboard ? elementClicked(letterObj) : null}>
         <p>
             {letterObj.letter}

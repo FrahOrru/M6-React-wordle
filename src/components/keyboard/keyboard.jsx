@@ -44,9 +44,9 @@ export default function Keyboard() {
     return (
         <div className="keyboard">
         {
-            keyboard.map((row) => {
-                const rowHtml = <div className='row' key={nanoid()}> { row.map((elem) => {
-                        return <Letter elementClicked={letterClick} letterObj={elem} isKeyboard={true}></Letter>
+            keyboard.map((row, index) => {
+                const rowHtml = <div className='row' key={index}> { row.map((elem) => {
+                        return <Letter key={elem.id}  elementClicked={letterClick} letterObj={elem} isKeyboard={true}></Letter>
                     }) 
                 }
                 </div>
