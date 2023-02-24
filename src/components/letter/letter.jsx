@@ -18,7 +18,7 @@ export default function Letter({letterObj}) {
     }
     
     return (
-      <div className={letterClass}>
+      <div className={letterClass} key={letterObj.id}>
         <p>
             {letterObj.letter}
         </p>

@@ -1,51 +1,28 @@
-import './App.css';
+import './board.css';
+import Letter  from '../letter/letter';
 import { useEffect, useState } from "react";
-import useKeypress from "./useKeypress";
-import Board from './components/board/board';
+import useKeypress from "../../useKeypress";
 
 const dailyWord = 'parola';
 const guesses = [];
 let currentGuess = [];
 
-function App() {
+export default function Board({board, setBoardNewValue}) {
   const [text, setText] = useState("");
-  let [board, setBoard] = useState(createBoard());
-
-  useEffect(() => {
-    
-    console.log('board', board)
-    
-  }, [board]);
 
   useKeypress((key) => {
-      if (key === "Backspace") {
-        setText(text.substr(0, text.length - 1));
-      } else if(key.match(/[a-z]/i)){
+    if (key === "Backspace") {
+      setText(text.substr(0, text.length - 1));
+    } else if(key.match(/[a-z]/i)){
 
-        setText(text + key);
-        
-        addLetterToBoard(key);
-      }
-  });
-
-  function createBoard() {
-    const tmp = [];
-
-    for(let i = 0; i <= 5; i++) {
-      tmp.push([]);
-      for(let y = 0; y <= dailyWord.length - 1; y++) {
-        tmp[i].push({
-          letter: '',
-          state: ''
-        })
-      }
+      setText(text + key);
+      
+      addLetterToBoard(key);
     }
-  
-    return tmp;
-  }
-  
+});
+
   function addLetterToBoard(letter) {
-    const tmp = board
+    const tmp = [...board]
     currentGuess.push(letter);
     tmp[guesses.length][currentGuess.length - 1].letter = letter;
   
@@ -55,7 +32,7 @@ function App() {
       checkGuess(text + letter);
     }
 
-    setBoard(tmp);
+    setBoardNewValue(tmp);
   }
 
   function checkGuess(guess) {
@@ -74,15 +51,14 @@ function App() {
       }
    }
    console.log(board)
-   setBoard(tmp);
+   setBoardNewValue(tmp);
 
    checkWin(guess);
   }
 
   const checkWin = (guess) => {
     if(dailyWord.toLowerCase() === guess.toLowerCase()) {
-      console.log('hai vinto merdaaaaaaaa');
-      setBoard(createBoard())
+      setBoardNewValue()
     }
     cleanRow();
   }
@@ -92,16 +68,20 @@ function App() {
     currentGuess = [];
   }
 
-  return (
-    <div className="App">
-      <h1>Wordle</h1>
-      <Board board={board}></Board>
-    </div>
-  );
+
+
+    return (
+      <div className="board">
+        {
+            board.map((row) => {
+                const rowHtml = <div className='row'> { row.map((elem) => {
+                        return <Letter letterObj={elem}></Letter>
+                    }) 
+                }
+                </div>
+                return rowHtml
+            })
+        }
+      </div>
+    );
 }
-
-
-
-export default App;
-
-// board cell state : 'correct' | 'wrong' | 'replaceable'
