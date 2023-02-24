@@ -1,19 +1,13 @@
 import './App.css';
 import { useEffect, useState } from "react";
-import useKeypress from "./useKeypress";
 import Board from './components/board/board';
+import Keyboard from './components/keyboard/keyboard';
 import { nanoid } from 'nanoid';
 
 const dailyWord = 'parola';
 
 function App() {
   let [board, setBoard] = useState(createBoard());
-
-  useEffect(() => {
-    
-    console.log('board', board)
-    
-  }, [board]);
 
   function createBoard() {
     const tmp = [];
@@ -30,7 +24,6 @@ function App() {
     }
   
     return tmp;
-    // return Array(6).fill(Array(6).fill({id:  nanoid(), letter: '', state: '' }));
   }
 
   const setBoardNewValue = (value) => {
@@ -38,6 +31,7 @@ function App() {
     if(value) {
       setBoard(value);
     } else {
+      console.log('si')
       setBoard(createBoard());
     }
   }
@@ -46,6 +40,7 @@ function App() {
     <div className="App">
       <h1>Wordle</h1>
       <Board board={board} setBoardNewValue={setBoardNewValue}></Board>
+      <Keyboard></Keyboard>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import './board.css';
 import Letter  from '../letter/letter';
 import { useEffect, useState } from "react";
 import useKeypress from "../../useKeypress";
+import { nanoid } from 'nanoid';
 
 const dailyWord = 'parola';
 const guesses = [];
@@ -74,8 +75,8 @@ export default function Board({board, setBoardNewValue}) {
       <div className="board">
         {
             board.map((row) => {
-                const rowHtml = <div className='row'> { row.map((elem) => {
-                        return <Letter letterObj={elem}></Letter>
+                const rowHtml = <div className='row' key={nanoid()}> { row.map((elem) => {
+                        return <Letter letterObj={elem} isKeyboard={false}></Letter>
                     }) 
                 }
                 </div>
