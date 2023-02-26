@@ -3,20 +3,41 @@ import Letter from "../letter/letter";
 import { useEffect, useState } from "react";
 import useKeypress from "../../useKeypress";
 
-const dailyWord = "parola";
 const guesses = [];
 let currentGuess = [];
 
-export default function Board({ board, setBoardNewValue, virtualKeyPress }) {
+export default function Board({
+  dailyWord,
+  board,
+  setBoardNewValue,
+  virtualKeyPress,
+}) {
   const [text, setText] = useState("");
+  const [allWords, setAllWords] = useState([]);
+  const [isWordRecognised, setIsWordRecognised] = useState(true);
+
+  useEffect(() => {
+    fetch("https://random-word-api.herokuapp.com/all")
+      .then((res) => res.json())
+      .then((result) => {
+        setAllWords(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   useKeypress((key) => {
     if (key === "Backspace") {
       setText(text.substr(0, text.length - 1));
-    } else if (key.match(/[a-z]/i)) {
-      setText(text + key);
+      removeFromBoard();
+      setIsWordRecognised(true);
+    } else if (/^[a-zA-Z]$/.test(key)) {
+      if (isWordRecognised) {
+        setText(text + key);
 
-      addLetterToBoard(key);
+        addLetterToBoard(key);
+      }
     }
   });
 
@@ -39,24 +60,40 @@ export default function Board({ board, setBoardNewValue, virtualKeyPress }) {
     setBoardNewValue(tmp);
   }
 
-  function checkGuess(guess) {
-    guesses.push(guess);
-    const tmp = [...board];
+  const removeFromBoard = () => {
+    if (currentGuess.length > 0) {
+      const tmp = [...board];
 
-    for (var i = 0; i < guess.length; i++) {
-      if (dailyWord.toLowerCase().includes(guess[i].toLowerCase())) {
-        tmp[guesses.length - 1][i].state = "replaceable";
+      tmp[guesses.length][currentGuess.length - 1].letter = "";
 
-        if (guess[i] === dailyWord[i]) {
-          tmp[guesses.length - 1][i].state = "correct";
-        }
-      } else {
-        tmp[guesses.length - 1][i].state = "wrong";
-      }
+      currentGuess = currentGuess.slice(0, currentGuess.length - 1);
+
+      setBoardNewValue(tmp);
     }
-    setBoardNewValue(tmp);
+  };
 
-    checkWin(guess);
+  function checkGuess(guess) {
+    if (!!allWords.find((word) => word === guess)) {
+      guesses.push(guess);
+      const tmp = [...board];
+
+      for (var i = 0; i < guess.length; i++) {
+        if (dailyWord.toLowerCase().includes(guess[i].toLowerCase())) {
+          tmp[guesses.length - 1][i].state = "replaceable";
+
+          if (guess[i] === dailyWord[i]) {
+            tmp[guesses.length - 1][i].state = "correct";
+          }
+        } else {
+          tmp[guesses.length - 1][i].state = "wrong";
+        }
+      }
+      setBoardNewValue(tmp);
+
+      checkWin(guess);
+    } else {
+      setIsWordRecognised(false);
+    }
   }
 
   const checkWin = (guess) => {

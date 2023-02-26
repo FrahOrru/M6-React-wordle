@@ -22,14 +22,20 @@ export const ModalContent = styled.div`
 `;
 
 export const ModalClosure = styled.span`
-  color: #aaa;
+  color: black;
   float: right;
   font-size: 28px;
   font-weight: bold;
   :hover,
   :focus {
-    color: black;
+    color: #aaa;
     text-decoration: none;
     cursor: pointer;
   }
+`;
+
+export const ModalHeader = styled.div`
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
 `;

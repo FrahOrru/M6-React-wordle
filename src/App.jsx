@@ -3,15 +3,33 @@ import { useEffect, useState } from "react";
 import Board from "./components/board/board";
 import Keyboard from "./components/keyboard/keyboard";
 import { nanoid } from "nanoid";
-import { Modal, ModalContent, ModalClosure } from "./components/styled/popup";
-const dailyWord = "parola";
+import {
+  Modal,
+  ModalContent,
+  ModalClosure,
+  ModalHeader,
+} from "./components/styled/popup";
+import { Loader, LoaderLV2 } from "./components/styled/loader";
+let dailyWord = "";
 
 function App() {
-  let [board, setBoard] = useState(createBoard());
+  let [board, setBoard] = useState([]);
   let [modalStatus, setModalStatus] = useState(false);
   let [virtualPressLetter, setVirtualPressLetter] = useState("");
+  let [isLoading, setIsLoading] = useState(true);
 
-  useEffect((board) => {}, [board]);
+  useEffect(() => {
+    fetch("https://random-word-api.herokuapp.com/word?length=6")
+      .then((res) => res.json())
+      .then((result) => {
+        dailyWord = result[0];
+        setBoard(createBoard());
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   function createBoard() {
     const tmp = [];
@@ -38,13 +56,6 @@ function App() {
     }
   };
 
-  const closeModal = () => {
-    if (modalStatus) {
-      // setModalStatus(false);
-      // setBoard(createBoard());
-    }
-  };
-
   window.onclick = function (event) {
     if (modalStatus) {
       setModalStatus(false);
@@ -53,31 +64,43 @@ function App() {
   };
 
   const addKeyboardLetter = (elem) => {
-    console.log(elem.letter);
     setVirtualPressLetter(elem.letter);
   };
 
   return (
     <div className="App">
       <h1>Wordle</h1>
+
+      <Loader className={isLoading ? "display-block" : "display-none"}>
+        <LoaderLV2></LoaderLV2>
+      </Loader>
+
       <Modal
         id="myModal"
         className={modalStatus ? "display-block" : "display-none"}
       >
         <ModalContent>
-          <ModalClosure className="close" onclick={closeModal()}>
-            &times;
-          </ModalClosure>
-          <p>congratulation you guessed the word</p>
+          <ModalClosure className="close">&times;</ModalClosure>
+          <ModalHeader>
+            <h1>Congratulation</h1>
+          </ModalHeader>
+          <p>
+            you guessed the word, today's word was:{" "}
+            <span className="dailyWord">{dailyWord}</span>
+          </p>
         </ModalContent>
       </Modal>
 
       <Board
+        dailyWord={dailyWord}
         board={board}
         setBoardNewValue={setBoardNewValue}
         virtualKeyPress={virtualPressLetter}
       ></Board>
-      <Keyboard elementClicked={addKeyboardLetter}></Keyboard>
+
+      <div className={isLoading ? "display-none" : "display-block"}>
+        <Keyboard elementClicked={addKeyboardLetter}></Keyboard>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,10 @@
 }
 
 h1 {
-  color:rgba(255, 255, 255, 0.573)
+  color: rgba(255, 255, 255, 0.573);
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 50px;
+  font-weight: 700;
 }
 
 .display-block {
@@ -11,5 +14,10 @@ h1 {
 }
 
 .display-none {
-  display: none;
+  display: none!important;
+}
+
+.dailyWord {
+  font-family: 'Luckiest Guy', cursive;
+  color: #5cb85c;
 }
