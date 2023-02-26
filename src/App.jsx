@@ -13,10 +13,11 @@ import { Loader, LoaderLV2 } from "./components/styled/loader";
 let dailyWord = "";
 
 function App() {
-  let [board, setBoard] = useState([]);
-  let [modalStatus, setModalStatus] = useState(false);
-  let [virtualPressLetter, setVirtualPressLetter] = useState("");
-  let [isLoading, setIsLoading] = useState(true);
+  const [board, setBoard] = useState([]);
+  const [winModalStatus, setModalStatus] = useState(false);
+  const [gameOverModalStatus, setGameOverModalStatus] = useState(false);
+  const [virtualPressLetter, setVirtualPressLetter] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch("https://random-word-api.herokuapp.com/word?length=6")
@@ -57,14 +58,21 @@ function App() {
   };
 
   window.onclick = function (event) {
-    if (modalStatus) {
+    if (winModalStatus) {
       setModalStatus(false);
+      setBoard(createBoard());
+    } else if (gameOverModalStatus) {
+      setGameOverModalStatus(false);
       setBoard(createBoard());
     }
   };
 
   const addKeyboardLetter = (elem) => {
     setVirtualPressLetter(elem.letter);
+  };
+
+  const gameOver = () => {
+    setGameOverModalStatus(true);
   };
 
   return (
@@ -77,7 +85,7 @@ function App() {
 
       <Modal
         id="myModal"
-        className={modalStatus ? "display-block" : "display-none"}
+        className={winModalStatus ? "display-block" : "display-none"}
       >
         <ModalContent>
           <ModalClosure className="close">&times;</ModalClosure>
@@ -91,11 +99,28 @@ function App() {
         </ModalContent>
       </Modal>
 
+      <Modal
+        id="myModal"
+        className={gameOverModalStatus ? "display-block" : "display-none"}
+      >
+        <ModalContent>
+          <ModalClosure className="close">&times;</ModalClosure>
+          <ModalHeader className="game-over">
+            <h1>Game Over</h1>
+          </ModalHeader>
+          <p>
+            I'm sorry but you lost, today's word was:{" "}
+            <span className="dailyWord">{dailyWord}</span>
+          </p>
+        </ModalContent>
+      </Modal>
+
       <Board
         dailyWord={dailyWord}
         board={board}
         setBoardNewValue={setBoardNewValue}
         virtualKeyPress={virtualPressLetter}
+        gameOver={gameOver}
       ></Board>
 
       <div className={isLoading ? "display-none" : "display-block"}>

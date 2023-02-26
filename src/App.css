@@ -21,3 +21,7 @@ h1 {
   font-family: 'Luckiest Guy', cursive;
   color: #5cb85c;
 }
+
+.game-over {
+  background-color: rgb(169, 6, 6)!important;
+}

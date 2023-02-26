@@ -11,10 +11,12 @@ export default function Board({
   board,
   setBoardNewValue,
   virtualKeyPress,
+  gameOver,
 }) {
   const [text, setText] = useState("");
   const [allWords, setAllWords] = useState([]);
   const [isWordRecognised, setIsWordRecognised] = useState(true);
+  const [isShaking, setIsShaking] = useState(false);
 
   useEffect(() => {
     fetch("https://random-word-api.herokuapp.com/all")
@@ -93,6 +95,10 @@ export default function Board({
       checkWin(guess);
     } else {
       setIsWordRecognised(false);
+      setIsShaking(true);
+      setTimeout(() => {
+        setIsShaking(false);
+      }, 500);
     }
   }
 
@@ -100,6 +106,9 @@ export default function Board({
     if (dailyWord.toLowerCase() === guess.toLowerCase()) {
       setBoardNewValue();
       cleanAll();
+    }
+    if (guesses.length === 6) {
+      gameOver();
     }
     cleanRow();
   };
@@ -118,7 +127,10 @@ export default function Board({
     <div className="board">
       {board.map((row, index) => {
         const rowHtml = (
-          <div className="row" key={index}>
+          <div
+            className={`row shake ${isShaking ? "shake-active" : ""}`}
+            key={index}
+          >
             {" "}
             {row.map((elem) => {
               return (
