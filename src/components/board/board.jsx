@@ -2,13 +2,12 @@ import "./board.css";
 import Letter from "../letter/letter";
 import { useEffect, useState } from "react";
 import useKeypress from "../../useKeypress";
-import { nanoid } from "nanoid";
 
 const dailyWord = "parola";
 const guesses = [];
 let currentGuess = [];
 
-export default function Board({ board, setBoardNewValue }) {
+export default function Board({ board, setBoardNewValue, virtualKeyPress }) {
   const [text, setText] = useState("");
 
   useKeypress((key) => {
@@ -21,6 +20,13 @@ export default function Board({ board, setBoardNewValue }) {
     }
   });
 
+  useEffect(() => {
+    if (virtualKeyPress) {
+      setText(text + virtualKeyPress);
+      addLetterToBoard(virtualKeyPress);
+    }
+  }, [virtualKeyPress]); // eslint-disable-line react-hooks/exhaustive-deps
+
   function addLetterToBoard(letter) {
     const tmp = [...board];
     currentGuess.push(letter);
@@ -28,14 +34,14 @@ export default function Board({ board, setBoardNewValue }) {
 
     if (currentGuess.length === dailyWord.length) {
       checkGuess(text + letter);
-    } else {
-      setBoardNewValue(tmp);
     }
+
+    setBoardNewValue(tmp);
   }
 
   function checkGuess(guess) {
     guesses.push(guess);
-    const tmp = board;
+    const tmp = [...board];
 
     for (var i = 0; i < guess.length; i++) {
       if (dailyWord.toLowerCase().includes(guess[i].toLowerCase())) {
@@ -56,6 +62,7 @@ export default function Board({ board, setBoardNewValue }) {
   const checkWin = (guess) => {
     if (dailyWord.toLowerCase() === guess.toLowerCase()) {
       setBoardNewValue();
+      cleanAll();
     }
     cleanRow();
   };
@@ -64,6 +71,11 @@ export default function Board({ board, setBoardNewValue }) {
     setText("");
     currentGuess = [];
   }
+
+  const cleanAll = () => {
+    cleanRow();
+    guesses.pop();
+  };
 
   return (
     <div className="board">

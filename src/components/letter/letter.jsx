@@ -1,40 +1,44 @@
+import "./letter.css";
 
-import './letter.css';
+export default function Letter({ letterObj, isKeyboard, elementClicked }) {
+  let letterClass = "letter ";
 
-export default function Letter({letterObj, isKeyboard, elementClicked}) {
-    let letterClass = 'letter ';
-
-    switch(letterObj.state) {
-      case 'correct':
-        letterClass += 'green-bg ';
-        break;
-      case 'replaceable':
-        letterClass += 'yellow-bg ';
-        break;
-      case 'wrong':
-        letterClass += 'grey-bg ';
-        break;
-      default: break;  
-    }
-
-    switch(letterObj.letter) {
-      case 'enter':
-      case 'delete':
-        letterClass += 'special-letter ';
+  switch (letterObj.state) {
+    case "correct":
+      letterClass += "green-bg ";
       break;
-      default: break;    
-    }
+    case "replaceable":
+      letterClass += "yellow-bg ";
+      break;
+    case "wrong":
+      letterClass += "grey-bg ";
+      break;
+    default:
+      break;
+  }
 
-    if(isKeyboard) {
-      letterClass += 'clickable '
+  switch (letterObj.letter) {
+    case "enter":
+    case "delete":
+      letterClass += "special-letter ";
+      break;
+    default:
+      break;
+  }
+
+  if (isKeyboard) {
+    letterClass += "clickable ";
+  }
+
+  const onLetterClicked = () => {
+    if (isKeyboard) {
+      elementClicked(letterObj);
     }
-    
-    return (
-      <div className={letterClass}  
-      onClick={isKeyboard ? elementClicked(letterObj) : null}>
-        <p>
-            {letterObj.letter}
-        </p>
-      </div>
-    );
+  };
+
+  return (
+    <div className={letterClass} onClick={onLetterClicked}>
+      <p>{letterObj.letter}</p>
+    </div>
+  );
 }

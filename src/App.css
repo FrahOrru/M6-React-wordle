@@ -1,8 +1,15 @@
 .App {
   text-align: center;
-  height: 100vh;
 }
 
 h1 {
   color:rgba(255, 255, 255, 0.573)
+}
+
+.display-block {
+  display: block!important;
+}
+
+.display-none {
+  display: none;
 }
