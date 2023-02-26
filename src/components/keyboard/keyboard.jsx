@@ -31,7 +31,6 @@ const alphabet = [
   "b",
   "n",
   "m",
-  "enter",
 ];
 
 export default function Keyboard({ elementClicked }) {
@@ -53,7 +52,7 @@ export default function Keyboard({ elementClicked }) {
       });
     }
 
-    for (let y = 0; y <= 8; y++) {
+    for (let y = 0; y <= 7; y++) {
       tmp[2].push({
         id: nanoid(),
         letter: alphabet[19 + y],
@@ -69,6 +68,7 @@ export default function Keyboard({ elementClicked }) {
   const letterClick = (element) => {
     elementClicked(element);
   };
+
   return (
     <div className="keyboard">
       {keyboard.map((row, index) => {

@@ -44,9 +44,14 @@ export default function Board({
   });
 
   useEffect(() => {
-    if (virtualKeyPress) {
+    console.log(virtualKeyPress);
+    if (virtualKeyPress && virtualKeyPress !== "delete") {
       setText(text + virtualKeyPress);
       addLetterToBoard(virtualKeyPress);
+    } else if (virtualKeyPress === "delete") {
+      removeFromBoard();
+      setText(text.substr(0, text.length - 1));
+      setIsWordRecognised(true);
     }
   }, [virtualKeyPress]); // eslint-disable-line react-hooks/exhaustive-deps
 
